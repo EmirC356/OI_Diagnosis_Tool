@@ -1,0 +1,36 @@
+from pathlib import Path
+import pandas as pd
+import sys
+
+# === 1) Point to your file robustly (works with spaces & parens) ===
+# Option A: absolute path (edit this)
+# fpath = Path("C:/Users/you/ENS210/data/clinvar_result (1).txt")
+
+# Option B: relative path (e.g., file lives in ./data/)
+fpath = Path("data") / "COL1A1_Template.txt"
+
+print("CWD:", Path.cwd())
+print("Looking for:", fpath.resolve())
+if not fpath.exists():
+    print("❌ File not found at:", fpath.resolve())
+    sys.exit(1)
+
+# === 2) Try reading as TSV first (ClinVar downloads are tab-delimited) ===
+try:
+    df = pd.read_csv(fpath, sep="\t", dtype=str, low_memory=False)
+    print("✅ Loaded as TSV. Rows:", len(df), "Cols:", len(df.columns))
+except Exception as e_tsv:
+    print("TSV read failed, trying CSV. Error:", e_tsv)
+    try:
+        df = pd.read_csv(fpath, dtype=str, low_memory=False)
+        print("✅ Loaded as CSV. Rows:", len(df), "Cols:", len(df.columns))
+    except Exception as e_csv:
+        print("❌ Could not read file as TSV or CSV.")
+        print("TSV error:", e_tsv)
+        print("CSV error:", e_csv)
+        raise
+
+# Quick sanity check of expected columns
+expected = {"Gene(s)", "Protein change", "Germline classification"}
+missing = [c for c in expected if c not in df.columns]
+print("Missing expected columns:", missing if missing else "None 🎉")

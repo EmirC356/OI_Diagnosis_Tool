@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if [ -d \"c:\\Users\\lorda\\OneDrive\\Masaüstü\\Bioinfo\\ENS210\\ENS210_Project\\data\" ])",
+      "Bash(then ls -la \"c:\\Users\\lorda\\OneDrive\\Masaüstü\\Bioinfo\\ENS210\\ENS210_Project\\data\")",
+      "Bash(fi)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(download_protein_sequences.bat)",
+      "Bash(move \"Data_Cleaning.jpynb\" \"01_data_cleaning\"\" && move \"cleaned_COL1A1.csv\" \"01_data_cleaning\"\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,139 @@
+
+SIFT INPUT FILES - SUBMISSION GUIDE
+======================================================================
+
+FILES CREATED:
+
+1. sift_COL1A1_substitutions.txt (88 variants)
+   Format: position,reference_aa,substitution_aa
+   Example: 1463,F,L
+
+2. sift_COL1A2_substitutions.txt (88 variants)
+   Format: position,reference_aa,substitution_aa
+
+3. sift_COL1A1_substitutions_with_ids.tsv
+   Contains VariationID and true labels for analysis
+
+4. sift_COL1A2_substitutions_with_ids.tsv
+   Contains VariationID and true labels for analysis
+
+PROTEIN SEQUENCES NEEDED:
+
+You need to download protein sequences from UniProt:
+
+Option 1: Use download script
+   Windows: download_protein_sequences.bat
+   Linux/Mac: bash download_protein_sequences.sh
+
+Option 2: Manual download
+   COL1A1: https://www.uniprot.org/uniprot/P02452.fasta
+   COL1A2: https://www.uniprot.org/uniprot/P08123.fasta
+
+======================================================================
+HOW TO USE SIFT WEB INTERFACE
+======================================================================
+
+SIFT Website: http://sift.bii.a-star.edu.sg/
+
+Method 1: SIFT Sequences (Submit with Protein Sequence)
+---------------------------------------------------------
+
+1. Go to: http://sift.bii.a-star.edu.sg/www/SIFT_seq_submit2.html
+
+2. Upload Files:
+   - Protein sequence: COL1A1_protein.fasta
+   - Substitutions: sift_COL1A1_substitutions.txt
+
+3. Settings:
+   - Database: UniRef90 (recommended)
+   - Median sequence conservation: 3.00
+
+4. Submit and wait for results (may take 15-30 minutes)
+
+5. Repeat for COL1A2:
+   - Protein sequence: COL1A2_protein.fasta
+   - Substitutions: sift_COL1A2_substitutions.txt
+
+Method 2: SIFT BLink (Faster, if sequences in database)
+--------------------------------------------------------
+
+1. Go to: http://sift.bii.a-star.edu.sg/www/SIFT_BLink_submit.html
+
+2. Enter UniProt ID:
+   For COL1A1: P02452
+   For COL1A2: P08123
+
+3. Upload substitutions file:
+   sift_COL1A1_substitutions.txt (or COL1A2)
+
+4. Submit
+
+======================================================================
+INTERPRETING SIFT RESULTS
+======================================================================
+
+SIFT Output Format:
+-------------------
+Position  Ref  Sub  SIFT_Score  Prediction  Median_Info
+1463      F    L    0.00        DELETERIOUS 3.00
+
+Prediction Thresholds:
+----------------------
+SIFT Score <= 0.05: DELETERIOUS (damaging, pathogenic)
+SIFT Score > 0.05:  TOLERATED (benign)
+
+Lower scores = more deleterious
+
+======================================================================
+AFTER GETTING SIFT RESULTS
+======================================================================
+
+1. Download SIFT results file
+
+2. Parse results and match with VariationIDs:
+
+   import pandas as pd
+
+   # Load SIFT results
+   df_sift = pd.read_csv("sift_results.txt", sep='\t')
+
+   # Load mapping with VariationIDs
+   df_mapping = pd.read_csv("sift_COL1A1_substitutions_with_ids.tsv", sep='\t')
+
+   # Merge
+   df_merged = df_mapping.merge(df_sift,
+                                  left_on=['position', 'reference', 'substitution'],
+                                  right_on=['Position', 'Ref', 'Sub'])
+
+   # Compare predictions with true labels
+   df_merged['SIFT_pred'] = (df_merged['SIFT_Score'] <= 0.05).astype(int)
+
+   # Calculate accuracy
+   from sklearn.metrics import accuracy_score
+   accuracy = accuracy_score(df_merged['label'], df_merged['SIFT_pred'])
+   print(f"SIFT Accuracy: {accuracy:.2%}")
+
+3. Compare with your ML model performance
+
+======================================================================
+ALTERNATIVE: PROVEAN (SIFT Alternative)
+======================================================================
+
+If SIFT is slow or unavailable, try PROVEAN:
+http://provean.jcvi.org/seq_submit.php
+
+PROVEAN uses similar input format and provides similar predictions.
+
+======================================================================
+SUMMARY
+======================================================================
+
+Ready to submit:
+1. Download protein sequences (run download script)
+2. Upload to SIFT web interface:
+   - COL1A1_protein.fasta + sift_COL1A1_substitutions.txt
+   - COL1A2_protein.fasta + sift_COL1A2_substitutions.txt
+3. Wait for results (15-30 min each)
+4. Parse results and compare with your ML model
+
+Total variants to test: 176

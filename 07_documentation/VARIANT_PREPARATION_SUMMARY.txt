@@ -1,0 +1,27 @@
+
+VARIANT CATEGORIZATION SUMMARY:
+
+Total Variants: 3105
+
+Categories:
+  1. Missense variants (need tool queries):      855 ( 27.5%)
+  2. Loss-of-function (consensus pathogenic):    784 ( 25.2%)
+  3. Silent/non-coding (consensus benign):      1356 ( 43.7%)
+  4. Other variants (default moderate):          107 (  3.4%)
+
+FILES GENERATED:
+  1. missense_variants_for_tools.tsv           - List of 855 missense variants to query
+  2. variant_predictions_with_consensus.tsv    - All 3105 variants with consensus predictions
+  3. INSTRUCTIONS_FOR_TOOL_QUERIES.txt         - Next steps guide
+
+NEXT STEPS:
+  1. Check if your original ClinVar files have tool predictions already
+  2. If not, download dbNSFP (chr7 + chr17)
+  3. Run 06b_query_dbnsfp.py to match variants and extract scores
+  4. Run 06c_compare_all_tools.py to generate final comparison
+
+ESTIMATED TIME:
+  - Check ClinVar files: 5 minutes
+  - Download dbNSFP: 30-60 minutes
+  - Query and extract: 15-30 minutes
+  - Total: 1-2 hours

@@ -1,0 +1,29 @@
+>sp|P02452|CO1A1_HUMAN Collagen alpha-1(I) chain
+# Full protein sequence would go here
+# For actual use, download from UniProt: https://www.uniprot.org/uniprot/P02452
+
+>sp|P08123|CO1A2_HUMAN Collagen alpha-2(I) chain
+# Full protein sequence would go here
+# For actual use, download from UniProt: https://www.uniprot.org/uniprot/P08123
+
+# MISSENSE VARIANTS IN TEST SET:
+# 1166697: NM_000088.4(COL1A1):c.4387T>C (p.Phe1463Leu) - F1463L (Label: Benign)
+# 953286: NM_000088.4(COL1A1):c.4321G>T (p.Asp1441Tyr) - D1441Y (Label: Pathogenic)
+# 850851: NM_000088.4(COL1A1):c.4321G>C (p.Asp1441His) - D1441H (Label: Pathogenic)
+# 425629: NM_000088.4(COL1A1):c.4292C>T (p.Thr1431Ile) - T1431I (Label: Pathogenic)
+# 1332991: NM_000088.4(COL1A1):c.4238A>G (p.Asp1413Gly) - D1413G (Label: Pathogenic)
+# 2138065: NM_000088.4(COL1A1):c.4193T>G (p.Ile1398Ser) - I1398S (Label: Pathogenic)
+# 1415174: NM_000088.4(COL1A1):c.4183G>A (p.Glu1395Lys) - E1395K (Label: Benign)
+# 2032277: NM_000088.4(COL1A1):c.4103A>G (p.Tyr1368Cys) - Y1368C (Label: Pathogenic)
+# 3912057: NM_000088.4(COL1A1):c.3893C>T (p.Thr1298Ile) - T1298I (Label: Pathogenic)
+# 1455998: NM_000088.4(COL1A1):c.3855T>A (p.Asp1285Glu) - D1285E (Label: Pathogenic)
+# 852121: NM_000088.4(COL1A1):c.3821A>C (p.Tyr1274Ser) - Y1274S (Label: Pathogenic)
+# 425626: NM_000088.4(COL1A1):c.3815G>T (p.Gly1272Val) - G1272V (Label: Pathogenic)
+# 425625: NM_000088.4(COL1A1):c.3790A>G (p.Met1264Val) - M1264V (Label: Pathogenic)
+# 1192753: NM_000088.4(COL1A1):c.3656A>G (p.Asp1219Gly) - D1219G (Label: Pathogenic)
+# 2819030: NM_000088.4(COL1A1):c.3653C>T (p.Ala1218Val) - A1218V (Label: Pathogenic)
+# 456776: NM_000088.4(COL1A1):c.3647A>G (p.Tyr1216Cys) - Y1216C (Label: Pathogenic)
+# 655548: NM_000088.4(COL1A1):c.3496G>A (p.Gly1166Ser) - G1166S (Label: Pathogenic)
+# 456769: NM_000088.4(COL1A1):c.3407G>C (p.Gly1136Ala) - G1136A (Label: Pathogenic)
+# 2184582: NM_000088.4(COL1A1):c.3376C>T (p.Pro1126Ser) - P1126S (Label: Benign)
+# 2417057: NM_000088.4(COL1A1):c.3355C>A (p.Pro1119Thr) - P1119T (Label: Benign)

@@ -1,0 +1,38 @@
+
+TO GET SIFT/POLYPHEN/CADD/REVEL PREDICTIONS:
+
+Option 1: Use dbNSFP Database (RECOMMENDED)
+--------------------------------------------
+1. Download dbNSFP for chr7 and chr17:
+   wget https://dbnsfp.s3.amazonaws.com/dbNSFP4.5a_variant.chr7.gz
+   wget https://dbnsfp.s3.amazonaws.com/dbNSFP4.5a_variant.chr17.gz
+
+2. Unzip the files:
+   gunzip dbNSFP4.5a_variant.chr7.gz
+   gunzip dbNSFP4.5a_variant.chr17.gz
+
+3. Use the provided script (06b_query_dbnsfp.py) to:
+   - Match your 855 missense variants
+   - Extract SIFT, PolyPhen-2, CADD, REVEL scores
+   - Merge with consensus predictions for other variants
+
+Option 2: Use ClinVar Annotations (QUICK CHECK)
+------------------------------------------------
+Your ClinVar download might already have some tool predictions!
+Check the original COL1A1_All.txt and COL1A2_All.txt files for columns like:
+- SIFT_pred, SIFT_score
+- Polyphen2_HDIV_pred, Polyphen2_HDIV_score
+- CADD_phred
+- REVEL_score
+
+If these columns exist, we can extract them directly!
+
+Option 3: Manual Web Query (SLOW)
+----------------------------------
+For the 855 missense variants, manually query:
+- SIFT: http://sift.bii.a-star.edu.sg/
+- PolyPhen-2: http://genetics.bwh.harvard.edu/pph2/
+- CADD: https://cadd.gs.washington.edu/
+- REVEL: Pre-computed scores only
+
+NOT RECOMMENDED due to time constraints.

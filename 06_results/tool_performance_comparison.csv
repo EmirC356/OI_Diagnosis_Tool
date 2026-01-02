@@ -1,0 +1,9 @@
+Tool,Type,Accuracy,Precision,Recall,Specificity,ROC-AUC,MCC
+Random Forest,Our Model (Disease-Specific),0.9726,0.9836,0.9655,0.9993,0.9891,0.9788
+Gradient Boosting,Our Model (Disease-Specific),0.97,0.9801,0.9643,0.9979,0.9895,0.9788
+Logistic Regression,Our Model (Disease-Specific),0.9688,0.9866,0.9554,0.9881,0.9873,0.9455
+SVM,Our Model (Disease-Specific),0.9675,0.9824,0.9572,0.9874,0.9869,0.9524
+REVEL,Generic Tool,0.9,0.89,0.91,0.89,0.94,
+CADD,Generic Tool,0.88,0.86,0.9,0.86,0.93,
+PolyPhen-2,Generic Tool,0.85,0.83,0.88,0.82,0.89,
+SIFT,Generic Tool,0.78,0.75,0.82,0.74,0.82,

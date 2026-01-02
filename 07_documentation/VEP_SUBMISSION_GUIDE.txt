@@ -1,0 +1,63 @@
+
+VEP INPUT FILES CREATED
+
+Files for Ensembl VEP submission:
+
+1. test_variants_vep_default.txt (175 variants)
+   Format: chromosome start end allele strand identifier
+   Use: Default VEP format (RECOMMENDED)
+
+2. test_variants_vep.vcf (176 variants)
+   Format: Standard VCF
+   Use: VCF format (most compatible)
+
+3. test_variants_vep_hgvs.txt
+   Format: HGVS notation (NM_000088.4:c.4387T>C)
+   Use: HGVS format (if you have transcript coordinates)
+
+4. test_variants_vep_rsid.txt (150 variants)
+   Format: rsID (rs699)
+   Use: rsID lookup (if variants have dbSNP IDs)
+
+HOW TO USE WITH ENSEMBL VEP WEB INTERFACE:
+
+1. Go to: https://www.ensembl.org/Tools/VEP
+
+2. Upload one of these files:
+   - Recommended: test_variants_vep.vcf (most compatible)
+   - Alternative: test_variants_vep_default.txt
+
+3. Settings:
+   - Species: Human
+   - Reference: GRCh38
+   - Additional annotations:
+     [x] SIFT
+     [x] PolyPhen
+     [x] dbNSFP (for CADD, REVEL scores)
+
+4. Run and download results
+
+5. Compare VEP predictions with:
+   - Ground truth labels in test_variants_for_revel.tsv
+   - Your ML model predictions on same test set
+
+COMMAND LINE VEP (if installed):
+
+vep --input_file test_variants_vep.vcf \
+    --output_file vep_results.txt \
+    --format vcf \
+    --species homo_sapiens \
+    --assembly GRCh38 \
+    --sift b \
+    --polyphen b \
+    --plugin dbNSFP,REVEL_score,CADD_phred \
+    --offline
+
+NEXT STEPS:
+
+1. Submit test_variants_vep.vcf to Ensembl VEP
+2. Download results (will include SIFT, PolyPhen scores)
+3. Parse VEP output to extract predictions
+4. Compare with ground truth in test_variants_for_revel.tsv
+5. Calculate accuracy, precision, recall
+6. Compare with your ML model performance

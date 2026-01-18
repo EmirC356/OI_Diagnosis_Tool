@@ -1,236 +1,224 @@
-# Osteogenesis Imperfecta Diagnosis Model
-**Machine Learning-Based Variant Pathogenicity Prediction for COL1A1 and COL1A2 Genes**
+# OI-Pred: Osteogenesis Imperfecta Variant Pathogenicity Predictor
 
-## Project Overview
-This project develops disease-specific machine learning models to predict the pathogenicity of genetic variants in COL1A1 and COL1A2 genes associated with Osteogenesis Imperfecta (brittle bone disease). The models achieve 97.2% accuracy, outperforming industry-standard tools like REVEL by over 7%.
+**A Disease-Specific Machine Learning Tool for COL1A1/COL1A2 Variant Interpretation**
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
+
+OI-Pred is a machine learning-based tool that predicts the pathogenicity of genetic variants in COL1A1 and COL1A2 genes associated with Osteogenesis Imperfecta (brittle bone disease). By incorporating disease-specific features like glycine substitutions in the collagen triple helix, OI-Pred outperforms generic prediction tools.
 
 ## Key Results
-- **Best Model**: Random Forest (97.2% test accuracy)
-- **Performance vs REVEL**: +7.2% accuracy, +13.8% average improvement across all metrics
-- **Dataset**: 3,105 variants (1,682 pathogenic, 1,423 benign) from ClinVar
-- **Models Tested**: Logistic Regression, Random Forest, SVM, Gradient Boosting
+
+| Metric | OI-Pred (RF) | SIFT | Improvement |
+|--------|--------------|------|-------------|
+| Accuracy | 97.3% | 94.2% | +3.3% |
+| Specificity | 99.9% | 46.7% | +114% |
+| MCC | 0.979 | 0.614 | +59% |
+| ROC-AUC | 98.9% | 78.9% | +25% |
+
+*Comparison on same test set of 154 COL1A1/COL1A2 missense variants*
+
+## Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/oi-pred.git
+cd oi-pred
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Train the model (if not already trained)
+python src/train.py
+```
+
+### Predict a Single Variant
+
+```bash
+# Using variant string
+python predict.py "COL1A1 p.Gly992Ser"
+
+# Using explicit parameters
+python predict.py --gene COL1A1 --protein G992S --consequence missense
+```
+
+**Output:**
+```
+============================================================
+OI-Pred Prediction Result
+============================================================
+  Gene:            COL1A1
+  Protein Change:  G992S
+  Consequence:     missense
+------------------------------------------------------------
+  Prediction:      Pathogenic
+  Probability:     98.4% pathogenic
+  Interpretation:  Likely Pathogenic (High Confidence)
+============================================================
+```
+
+### Batch Prediction
+
+```bash
+# From CSV file
+python predict.py --file variants.csv --output predictions.csv
+```
+
+Input CSV format:
+```csv
+Gene,Protein_change,Consequence
+COL1A1,G992S,missense
+COL1A2,G259R,missense
+COL1A1,D1413G,missense
+```
+
+### Interactive Mode
+
+```bash
+python predict.py --interactive
+```
 
 ## Project Structure
 
 ```
-ENS210_Project/
+oi-pred/
+├── predict.py              # Main prediction script (USER INTERFACE)
+├── requirements.txt        # Python dependencies
+├── README.md               # This file
 │
-├── data/                           # Raw data files (not tracked in git)
+├── src/                    # Source code
+│   ├── config.py           # Configuration and constants
+│   ├── feature_engineering.py  # Feature extraction
+│   └── train.py            # Model training
 │
-├── 01_data_cleaning/               # Data cleaning and preprocessing
-│   ├── Data_Cleaning.jpynb         # Main data cleaning notebook
-│   ├── Control.jpynb               # Quality control checks
-│   ├── FastFileEditor.ipynb        # Utility for file editing
-│   └── cleaned_COL1A1.csv          # Cleaned dataset
+├── models/                 # Trained models
+│   ├── oi_pred_rf_model.pkl    # Random Forest model
+│   └── feature_list.json       # Feature names
 │
-├── 02_data_exploration/            # Exploratory data analysis
-│   ├── 01_data_exploration.py      # EDA script
-│   └── data_exploration_plots.png  # Visualization of variant distributions
+├── data/                   # Data files
+│   ├── cleaned_COL1_variants.csv   # Processed variant data
+│   └── feature_matrix.csv          # Extracted features
 │
-├── 03_feature_engineering/         # Feature extraction and engineering
-│   └── 02_feature_engineering.py   # Feature engineering pipeline
+├── 06_results/             # Analysis results
+│   ├── sota_benchmark_results.csv
+│   ├── sota_benchmark_comparison.png
+│   └── external_validation_results.png
 │
-├── 04_models/                      # Machine learning models
-│   ├── 03_ml_models.py             # ML training and evaluation script
-│   ├── Gene_mutation_project.ipynb # Model development notebook
-│   ├── model_comparison.csv        # Performance metrics comparison
-│   ├── model_evaluation.png        # Model performance visualizations
-│   └── feature_importance.csv      # Feature importance rankings
-│
-├── 05_tool_comparison/             # Comparison with existing tools
-│   ├── 05_tool_comparison_analysis.py           # Tool comparison analysis
-│   ├── 06a_prepare_variants_for_tools.py        # Variant preparation
-│   ├── 06b_query_dbnsfp.py                      # dbNSFP querying
-│   ├── 06c_use_ensembl_vep.py                   # VEP API usage
-│   ├── 07_create_test_files_for_revel.py        # REVEL test file generation
-│   ├── 08_create_vep_input_file.py              # VEP input formatting
-│   ├── 09_create_sift_input_files.py            # SIFT input (initial)
-│   ├── 10_fix_sift_format.py                    # SIFT format fix (v2)
-│   ├── 11_create_correct_sift_format.py         # SIFT format (final)
-│   ├── 12_parse_vep_results.py                  # VEP results parser
-│   ├── REVEL_Confusion_Matrix_code.py           # REVEL comparison
-│   │
-│   ├── test_variants_for_revel.tsv              # Test set with labels
-│   ├── complete_test_set.tsv                    # Full test set (621 variants)
-│   ├── missense_test_set.tsv                    # Missense only (176 variants)
-│   ├── missense_variants_for_tools.tsv          # Tool query format
-│   │
-│   ├── test_variants_vep.vcf                    # VEP input (VCF format)
-│   ├── test_variants_vep_default.txt            # VEP input (default format)
-│   ├── test_variants_vep_hgvs.txt               # VEP input (HGVS format)
-│   ├── test_variants_vep_rsid.txt               # VEP input (rsID format)
-│   │
-│   ├── COL1A1_protein.fasta                     # UniProt P02452
-│   ├── COL1A2_protein.fasta                     # UniProt P08123
-│   ├── sift_COL1A1_substitutions_correct.txt    # SIFT input (X#Y format)
-│   ├── sift_COL1A2_substitutions_correct.txt    # SIFT input (X#Y format)
-│   │
-│   └── 1eXf8ZzkWueyMwc6.txt                     # VEP results file
-│
-├── 06_results/                     # Analysis results and visualizations
-│   ├── confusion_matrices.png                   # Model confusion matrices
-│   ├── tool_comparison_comprehensive.png        # Multi-metric comparison
-│   ├── tool_comparison_summary.txt              # Summary statistics
-│   ├── tool_performance_comparison.csv          # Performance metrics
-│   ├── all_variants_with_tool_predictions_vep.tsv
-│   ├── missense_vep_predictions.tsv
-│   └── variant_predictions_with_consensus.tsv
-│
-├── 07_documentation/               # Project documentation
-│   ├── COMPREHENSIVE_PROJECT_REPORT.md          # Full project report
-│   ├── DETAILED_METHODOLOGY_EXPLANATION.md      # Methods documentation
-│   ├── PROJECT_SUMMARY.md                       # Project summary
-│   ├── PROJECT_SUMMARY_SHORT.md                 # Brief summary
-│   ├── 04_existing_tools_guide.md               # Guide to existing tools
-│   ├── 06_get_existing_tool_predictions.md      # Tool query instructions
-│   ├── INSTRUCTIONS_FOR_TOOL_QUERIES.txt
-│   ├── TEST_SET_INSTRUCTIONS.txt
-│   ├── READY_FOR_VEP_SUBMISSION.md
-│   ├── VEP_SUBMISSION_GUIDE.txt
-│   ├── SIFT_SUBMISSION_GUIDE.txt
-│   ├── VARIANT_PREPARATION_SUMMARY.txt
-│   ├── TOOL_COMPARISON_RESULTS.md
-│   └── TOOL_PREDICTIONS_STATUS.md
-│
-├── 08_presentation/                # Presentation materials
-│   ├── 34110_Emir_Ceylan_ENS210_Presentation.pdf
-│   └── presentation_talking_notes.md            # 3-minute talk notes
-│
-├── download_protein_sequences.bat  # Utility script for Windows
-├── download_protein_sequences.sh   # Utility script for Linux/Mac
-└── README.md                       # This file
+└── 07_documentation/       # Documentation
+    ├── FEATURE_INTERPRETABILITY.md
+    └── COMPREHENSIVE_PROJECT_REPORT.md
 ```
 
-## Workflow
+## Features Used
 
-### 1. Data Cleaning ([01_data_cleaning/](01_data_cleaning/))
-- Downloaded variants from ClinVar for COL1A1 and COL1A2 genes
-- Filtered out Variants of Uncertain Significance (VUS)
-- Excluded non-OI related variants and complex structural variants (>50 bp)
-- Final dataset: 3,105 variants (54.2% pathogenic, 45.8% benign)
+OI-Pred uses 25 carefully selected features:
 
-### 2. Data Exploration ([02_data_exploration/](02_data_exploration/))
-- Analyzed variant type distributions
-- Examined molecular consequence patterns
-- Visualized class balance and pathogenicity by variant type
-- Key finding: Missense variants show balanced pathogenicity
+| Category | Features | Importance |
+|----------|----------|------------|
+| **Risk Indicators** | low_risk_consequence, high_risk_consequence | 47.3% |
+| **Molecular Consequence** | is_intron, is_synonymous, is_missense, etc. | 21.5% |
+| **Collagen-Specific** | glycine_substitution | 6.1% |
+| **Biochemical** | size_change, flexibility_change, hydrophobic_change | 12.7% |
+| **Positional** | normalized_position | 3.9% |
 
-### 3. Feature Engineering ([03_feature_engineering/](03_feature_engineering/))
-- Extracted genomic features (position, chromosome, gene)
-- Encoded variant types and molecular consequences
-- Created protein-level features (amino acid changes, glycine substitutions)
-- Engineered domain-specific features for collagen structure
+The **glycine_substitution** feature captures the biological principle that glycine must occupy every third position in the collagen triple helix - substitutions disrupt helix formation and cause OI.
 
-### 4. Model Development ([04_models/](04_models/))
-- Trained 4 ML models with 5-fold stratified cross-validation
-- Models: Logistic Regression, Random Forest, SVM, Gradient Boosting
-- Best performance: Random Forest (97.2% test accuracy)
-- Minimal overfitting: <2% gap between train and test accuracy
+## Model Performance
 
-### 5. Tool Comparison ([05_tool_comparison/](05_tool_comparison/))
-- Prepared test variants for external tools (REVEL, CADD, SIFT, PolyPhen-2)
-- Submitted variants to Ensembl VEP and SIFT web interfaces
-- Parsed results and compared with ML model performance
-- Result: ML models outperform generic tools by 7-18% across metrics
-
-### 6. Results Analysis ([06_results/](06_results/))
-- Generated comprehensive performance comparisons
-- Created visualizations for model evaluation
-- Documented improvement over existing tools
-- Key metric: +13.8% average improvement in accuracy over REVEL
-
-## Key Findings
-
-1. **Disease-specific models outperform generic tools**: By incorporating domain knowledge about collagen structure and OI-specific features, ML models achieved 97.2% accuracy vs 90% for REVEL
-
-2. **Minimal overfitting**: All models showed robust generalization with <2% train-test accuracy gap
-
-3. **Feature importance**: Glycine substitutions, variant position, and molecular consequence type were the most predictive features
-
-4. **Clinical relevance**: The model can assist in interpreting VUS and prioritizing variants for functional validation
-
-## Future Directions
-
-- Integrate 3D protein folding data from AlphaFold to model structural impact
-- Expand to the 15+ rarer genes associated with OI
-- Develop web interface for clinical variant interpretation
-- Validate on independent clinical cohorts
-
-## Requirements
-
-```bash
-# Python packages
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
-biopython
-
-# For Jupyter notebooks
-jupyter
-ipykernel
+### Cross-Validation Results (5-Fold)
+```
+Accuracy:  97.26% +/- 0.75%
+Precision: 98.36% +/- 0.53%
+Recall:    96.55% +/- 1.04%
+F1-Score:  97.45% +/- 0.71%
+ROC-AUC:   98.91% +/- 0.26%
+MCC:       0.9788
 ```
 
-## Usage
+### External Validation
+- Holdout set (20%): 97.7% accuracy
+- Cross-gene validation: 97.6% (COL1A1 to COL1A2)
 
-### Running the complete pipeline:
+## Why OI-Pred Outperforms Generic Tools
 
-```bash
-# 1. Data cleaning
-python 01_data_cleaning/Data_Cleaning.jpynb
+1. **Disease-Specific Features**: Encodes glycine substitutions critical for collagen structure
+2. **Trained on OI Data**: Learns patterns specific to COL1A1/COL1A2 variants
+3. **Collagen Biochemistry**: Incorporates amino acid property changes relevant to triple helix
+4. **Higher Specificity**: Reduces false positives (99.9% vs 46.7% for SIFT)
 
-# 2. Data exploration
-python 02_data_exploration/01_data_exploration.py
+## Interpretation Guide
 
-# 3. Feature engineering
-python 03_feature_engineering/02_feature_engineering.py
-
-# 4. Train models
-python 04_models/03_ml_models.py
-
-# 5. Compare with tools
-python 05_tool_comparison/05_tool_comparison_analysis.py
-```
-
-### Preparing variants for external tools:
-
-```bash
-# VEP submission
-python 05_tool_comparison/08_create_vep_input_file.py
-
-# SIFT submission
-python 05_tool_comparison/11_create_correct_sift_format.py
-
-# Parse VEP results
-python 05_tool_comparison/12_parse_vep_results.py
-```
-
-## Data Sources
-
-- **Variant data**: ClinVar (https://www.ncbi.nlm.nih.gov/clinvar/)
-- **Protein sequences**: UniProt (COL1A1: P02452, COL1A2: P08123)
-- **Genome reference**: GRCh38
-- **Tool comparisons**: Ensembl VEP, SIFT, PolyPhen-2, REVEL, CADD
+| Probability | Interpretation |
+|-------------|----------------|
+| >= 90% | Likely Pathogenic (High Confidence) |
+| 70-90% | Likely Pathogenic |
+| 30-70% | Uncertain Significance |
+| 10-30% | Likely Benign |
+| < 10% | Likely Benign (High Confidence) |
 
 ## Citation
 
-If you use this work, please cite:
-```
-Ceylan, E. (2025). Machine Learning-Based Pathogenicity Prediction for
-Osteogenesis Imperfecta Variants. ENS 210 Course Project.
+If you use OI-Pred in your research, please cite:
+
+```bibtex
+@software{oipred2025,
+  author = {Ceylan, Emir},
+  title = {OI-Pred: Disease-Specific Variant Pathogenicity Prediction for Osteogenesis Imperfecta},
+  year = {2025},
+  url = {https://github.com/yourusername/oi-pred}
+}
 ```
 
 ## License
 
-This project is for educational purposes as part of the ENS 210 course.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## References
+
+1. Marini JC, et al. Osteogenesis imperfecta. Nat Rev Dis Primers. 2017;3:17052.
+2. Forlino A, Marini JC. Osteogenesis imperfecta. Lancet. 2016;387:1657-1671.
+3. Van Dijk FS, Sillence DO. Osteogenesis imperfecta: clinical diagnosis. Am J Med Genet A. 2014;164A:1470-1481.
 
 ## Contact
 
-Emir Ceylan (Student ID: 34110)
-Course: ENS 210
-Date: December 31, 2025
+- **Author**: Emir Ceylan
+- **Course**: ENS 210 - Bioinformatics
+- **Institution**: Sabanci University
 
 ---
 
-**Note**: The `data/` folder contains raw ClinVar downloads and is not tracked in version control due to file size. Download instructions are provided in [07_documentation/](07_documentation/).
+## Development
+
+### Training a New Model
+
+```bash
+# Ensure data/feature_matrix.csv exists
+python src/train.py
+```
+
+### Running the Full Pipeline
+
+```bash
+# 1. Feature engineering (if starting from raw data)
+python src/feature_engineering.py
+
+# 2. Train model
+python src/train.py
+
+# 3. Make predictions
+python predict.py "COL1A1 G992S"
+```
+
+### Running Benchmarks
+
+```bash
+# SOTA comparison
+python 05_tool_comparison/06_sota_benchmark.py
+
+# External validation
+python 05_tool_comparison/08_external_validation.py
+```

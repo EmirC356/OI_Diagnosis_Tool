@@ -9,7 +9,10 @@
       "Bash(curl:*)",
       "Bash(cat:*)",
       "Bash(download_protein_sequences.bat)",
-      "Bash(move \"Data_Cleaning.jpynb\" \"01_data_cleaning\"\" && move \"cleaned_COL1A1.csv\" \"01_data_cleaning\"\")"
+      "Bash(move \"Data_Cleaning.jpynb\" \"01_data_cleaning\"\" && move \"cleaned_COL1A1.csv\" \"01_data_cleaning\"\")",
+      "Bash(git branch:*)",
+      "Bash(pip freeze:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,79 @@
+
+FEATURE SELECTION ANALYSIS REPORT
+==================================================
+
+SUMMARY:
+- Original features: 25
+- New features added: 26
+- Recommended to KEEP: 0
+- Recommended to DROP: 26
+- Optimized total: 25
+
+PERFORMANCE COMPARISON:
+- Original (25 features):  0.9726
+- All Features (51):       0.9749 (+0.23%)
+- Optimized (25 features):   0.9726 (+0.00%)
+
+FEATURES TO KEEP:
+
+
+FEATURES TO ELIMINATE:
+  - alpha_change: low importance=0.0071, low MI=0.1204, redundant
+  - beta_change: low importance=0.0027, low MI=0.1279
+  - turn_change: redundant
+  - polarity_change: low importance=0.0043, low MI=0.1289, redundant
+  - volume_change: redundant
+  - surface_change: redundant
+  - mw_change: redundant
+  - is_in_gxy_motif: low importance=0.0002, low MI=0.0596
+  - gxy_position: redundant
+  - is_in_gpp_motif: low importance=0.0000, low MI=0.0062
+  - is_proline_ref: low importance=0.0046, low MI=0.0000
+  - is_proline_alt: low importance=0.0001, low MI=0.0000
+  - proline_substitution: low importance=0.0063, low MI=0.0092
+  - affects_gxy_glycine: low importance=0.0004, low MI=0.0851, redundant
+  - window_avg_hydrophobic: low importance=0.0051, low MI=0.1256
+  - window_avg_volume: redundant
+  - window_avg_polarity: redundant
+  - window_avg_alpha: redundant
+  - window_avg_beta: redundant
+  - window_avg_turn: redundant
+  - window_avg_hydrophobic_no_gly: low importance=0.0025
+  - window_avg_volume_no_gly: redundant
+  - window_avg_polarity_no_gly: low importance=0.0073, low MI=0.1327, redundant
+  - window_avg_alpha_no_gly: low importance=0.0068, low MI=0.1332, redundant
+  - window_avg_beta_no_gly: redundant
+  - window_avg_turn_no_gly: low MI=0.1290, redundant
+
+REASONING:
+The window average features and many GPP/Proline features show low
+importance and high redundancy with existing features. The model
+already captures pathogenicity well through high_risk_consequence,
+glycine_substitution, and molecular consequence features.
+
+OPTIMIZED FEATURE LIST:
+  1. is_missense
+  2. is_nonsense
+  3. is_frameshift
+  4. is_splice
+  5. is_synonymous
+  6. is_intron
+  7. is_utr
+  8. is_inframe_indel
+  9. is_snv
+  10. is_deletion
+  11. is_insertion
+  12. is_duplication
+  13. is_COL1A1
+  14. is_COL1A2
+  15. hydrophobic_change
+  16. charge_change
+  17. polar_change
+  18. aromatic_change
+  19. size_change
+  20. flexibility_change
+  21. has_aa_change
+  22. normalized_position
+  23. high_risk_consequence
+  24. low_risk_consequence
+  25. glycine_substitution
